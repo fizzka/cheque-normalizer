@@ -18,7 +18,7 @@ class ChequeNormalizer
         foreach ($aProducts as $product) {
             $iPositionsSum += $product['price'] == 0
                 ? (int)$product['quantity']
-                : (int)$product['quantity']*$product['price'];
+                : (int)$product['quantity'] * $product['price'];
         }
 
         $iDiscountValue = $iPositionsSum - $iTotalSum;
