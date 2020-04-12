@@ -110,8 +110,6 @@ class ChequeNormalizer
                 if ($iDiscountError === 0) {
                     break;
                 }
-
-                unset($aProduct);
             }
         }
 
