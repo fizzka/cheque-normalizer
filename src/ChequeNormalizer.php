@@ -109,7 +109,7 @@ class ChequeNormalizer
                 $iDiscountError -= ($aProduct['price'] - 1) * $iSeparatedProducts;
             }
 
-            if ($iDiscountError !== 0 && ($aProduct['price'] - $iDiscountError) >= 1) {
+            if ($iDiscountError !== 0 && $iDiscountError <= $aProduct['price'] - 1) {
                 if ($aProduct['quantity'] > 1) {
                     $aProduct['quantity'] -= 1;
 
