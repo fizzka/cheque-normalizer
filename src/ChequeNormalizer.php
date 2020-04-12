@@ -66,6 +66,10 @@ class ChequeNormalizer
             }
         } elseif ($iDiscountError > 0) {
             foreach ($aProducts as &$aProduct) {
+                if ($iDiscountError === 0) {
+                    break;
+                }
+
                 if ($aProduct['price'] <= 1) {
                     continue;
                 }
