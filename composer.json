@@ -15,5 +15,8 @@
         "psr-4": {
             "Petcorp\\Fiscal\\": "src/"
         }
+    },
+    "require-dev": {
+        "tightenco/collect": "^7.5"
     }
 }

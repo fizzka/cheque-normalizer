@@ -33,6 +33,53 @@ class ChequeNormalizerTest extends TestCase
     }
 
     /**
+     * @group xxx
+     */
+    public function testSmudgeOrders()
+    {
+        $cheque = [];
+        $cheque[] = [
+            'name' => 'product1',
+            'quantity' => 11,
+            'price' => 7,
+        ];
+        $cheque[] = [
+            'name' => 'product2',
+            'quantity' => 5,
+            'price' => 5,
+        ];
+        $cheque[] = [
+            'name' => 'gift',
+            'quantity' => 13,
+            'price' => 0,
+        ];
+
+        $sum = $this->totalSum($cheque);
+
+        $chequeNormalized = (new ChequeNormalizer())->normalize($cheque, $sum);
+
+        $this->assertEquals($sum, $this->totalSum($chequeNormalized));
+        $this->assertEquals($this->totalCount($cheque), $this->totalCount($chequeNormalized));
+
+        $zeroPrices = collect($chequeNormalized)->filter(function ($pos) {
+            return $pos['price'] <= 0;
+        });
+        $this->assertEmpty($zeroPrices);
+    }
+
+    private static function totalSum(array $cheque)
+    {
+        return collect($cheque)->sum(function ($pos) {
+            return $pos['quantity'] * $pos['price'];
+        });
+    }
+
+    private static function totalCount(array $cheque)
+    {
+        return collect($cheque)->sum('quantity');
+    }
+
+    /**
      * @dataProvider percentSum
      */
     public function testSmudgeOrdersPositionsDetailFunction($iPercentSum)
