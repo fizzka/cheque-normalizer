@@ -37,12 +37,12 @@ class ChequeNormalizer
                 $iZeroProductsCount += $aProduct['quantity'];
             }
 
-            $aProduct['price'] = $iDiscountProductPrice;
+            $aProduct['price'] = (int)$iDiscountProductPrice;
 
             unset($aProduct);
         }
 
-        $iDiscountError = $iDiscountValue - $iDiscountUsed;
+        $iDiscountError = $iDiscountValue - (int)$iDiscountUsed;
 
         if ($iDiscountError < 0) {
             $aFirstProduct = &$aProducts[0];
