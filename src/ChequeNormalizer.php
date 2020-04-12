@@ -95,21 +95,7 @@ class ChequeNormalizer
                 continue;
             }
 
-            $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
-            $iSeparatedProducts = $this->round($iSeparatedProducts);
-
-            if ($this->check($iSeparatedProducts, $aProduct['price'], $iDiscountError)) {
-                $aProduct['quantity'] -= $iSeparatedProducts;
-                $aProducts[] = [
-                    'name' => $aProduct['name'] ?? '',
-                    'quantity' => $iSeparatedProducts,
-                    'price' => 1,
-                ];
-
-                $iDiscountError -= ($aProduct['price'] - 1) * $iSeparatedProducts;
-            }
-
-            if ($iDiscountError !== 0 && $iDiscountError <= $aProduct['price'] - 1) {
+            if ($iDiscountError <= $aProduct['price'] - 1) {
                 if ($aProduct['quantity'] > 1) {
                     $aProduct['quantity'] -= 1;
 
@@ -122,7 +108,21 @@ class ChequeNormalizer
                     $aProduct['price'] -= $iDiscountError;
                 }
 
-                $iDiscountError = 0;
+                break;
+            }
+
+            $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
+            $iSeparatedProducts = $this->round($iSeparatedProducts);
+
+            if ($this->check($iSeparatedProducts, $aProduct['price'], $iDiscountError)) {
+                $aProduct['quantity'] -= $iSeparatedProducts;
+                $aProducts[] = [
+                    'name' => $aProduct['name'] ?? '',
+                    'quantity' => $iSeparatedProducts,
+                    'price' => 1,
+                ];
+
+                $iDiscountError -= ($aProduct['price'] - 1) * $iSeparatedProducts;
             }
         }
 
