@@ -70,9 +70,10 @@ class ChequeNormalizer
                     continue;
                 }
 
-                if ($iDiscountError >= (($aProduct['price'] * $aProduct['quantity']) - $aProduct['quantity'])) {
-                    $iDiscountError -= ($aProduct['price'] * $aProduct['quantity']) - $aProduct['quantity'];
+                if ($iDiscountError >= ($aProduct['price'] -1 ) * $aProduct['quantity']) {
+                    $iDiscountError -= ($aProduct['price'] - 1) * $aProduct['quantity'];
                     $aProduct['price'] = 1;
+                    continue;
                 } else {
                     $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
 
