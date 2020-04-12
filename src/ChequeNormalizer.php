@@ -52,26 +52,38 @@ class ChequeNormalizer
         $iDiscountError = $iDiscountValue - (int)$iDiscountUsed;
 
         if ($iDiscountError < 0) {
-            $aFirstProduct = &$aProducts[0];
-
-            if ($aFirstProduct['quantity'] > 1) {
-                $aFirstProduct['quantity'] -= 1;
-                $aProducts[] = [
-                    'name' => $aFirstProduct['name'] ?? '',
-                    'quantity' => 1,
-                    'price' => $aFirstProduct['price'] - $iDiscountError,
-                ];
-            } else {
-                $aFirstProduct['price'] -= $iDiscountError;
-            }
+            return $this->negativeCorrection($aProducts, $iDiscountError);
+        } elseif ($iDiscountError > 0) {
+            return $this->positiveCorrection($aProducts, $iDiscountError);
         }
 
+        return $aProducts;
+    }
+
+    private function negativeCorrection($aProducts, $iDiscountError)
+    {
+        $aFirstProduct = &$aProducts[0];
+
+        if ($aFirstProduct['quantity'] > 1) {
+            $aFirstProduct['quantity'] -= 1;
+            $aProducts[] = [
+                'name' => $aFirstProduct['name'] ?? '',
+                'quantity' => 1,
+                'price' => $aFirstProduct['price'] - $iDiscountError,
+            ];
+        } else {
+            $aFirstProduct['price'] -= $iDiscountError;
+        }
+
+        return $aProducts;
+    }
+
+    private function positiveCorrection($aProducts, $iDiscountError)
+    {
         foreach ($aProducts as &$aProduct) {
             if ($iDiscountError === 0) {
                 break;
             }
-
-            // $iDiscountError > 0
 
             if ($aProduct['price'] <= 1) {
                 continue;
