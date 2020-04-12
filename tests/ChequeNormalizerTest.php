@@ -32,28 +32,46 @@ class ChequeNormalizerTest extends TestCase
         ];
     }
 
-    /**
-     * @group xxx
-     */
-    public function testSmudgeOrders()
-    {
-        $cheque = [];
-        $cheque[] = [
+    public function cheques() {
+        $cheque1 = [];
+        $cheque1[] = [
             'name' => 'product1',
-            'quantity' => 11,
-            'price' => 7,
+            'quantity' => 15,
+            'price' => 2,
         ];
-        $cheque[] = [
-            'name' => 'product2',
-            'quantity' => 5,
-            'price' => 5,
-        ];
-        $cheque[] = [
+        $cheque1[] = [
             'name' => 'gift',
             'quantity' => 13,
             'price' => 0,
         ];
 
+        yield [$cheque1];
+
+        $cheque2 = [];
+        $cheque2[] = [
+            'name' => 'product1',
+            'quantity' => 11,
+            'price' => 7,
+        ];
+        $cheque2[] = [
+            'name' => 'product2',
+            'quantity' => 5,
+            'price' => 5,
+        ];
+        $cheque2[] = [
+            'name' => 'gift',
+            'quantity' => 13,
+            'price' => 0,
+        ];
+
+        yield [$cheque2];
+    }
+
+    /**
+     * @dataProvider cheques
+     */
+    public function testSmudgeOrders($cheque)
+    {
         $sum = $this->totalSum($cheque);
 
         $chequeNormalized = (new ChequeNormalizer())->normalize($cheque, $sum);
