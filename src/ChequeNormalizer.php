@@ -25,7 +25,6 @@ class ChequeNormalizer
 
         $fCoefficient = (double)bcdiv($iDiscountValue, $iPositionsSum, 2);
         $iDiscountUsed = 0;
-        $iZeroProductsCount = 0;
 
         foreach ($aProducts as &$aProduct) {
             $iDiscountByProduct = floor($aProduct['price'] * $fCoefficient);
@@ -34,7 +33,6 @@ class ChequeNormalizer
 
             if ($iDiscountProductPrice <= 0) {
                 $iDiscountProductPrice = 1;
-                $iZeroProductsCount += $aProduct['quantity'];
             }
 
             $aProduct['price'] = (int)$iDiscountProductPrice;
