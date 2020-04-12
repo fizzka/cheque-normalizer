@@ -14,6 +14,15 @@ class ChequeNormalizer
 
     public function normalize(array $aProducts, $iTotalSum)
     {
+        $positionCount = 0;
+        foreach ($aProducts as $product) {
+            $positionCount += $product['quantity'];
+        }
+
+        if ($positionCount > $iTotalSum) {
+            throw new \Exception("Can't normalize cheque: items={$positionCount}, sum={$iTotalSum}");
+        }
+
         $iPositionsSum = 0;
         foreach ($aProducts as $product) {
             $iPositionsSum += $product['price'] == 0
