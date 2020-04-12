@@ -36,8 +36,13 @@ class ChequeNormalizerTest extends TestCase
         $cheque1 = [];
         $cheque1[] = [
             'name' => 'product1',
-            'quantity' => 15,
-            'price' => 2,
+            'quantity' => 11,
+            'price' => 7,
+        ];
+        $cheque1[] = [
+            'name' => 'product2',
+            'quantity' => 5,
+            'price' => 5,
         ];
         $cheque1[] = [
             'name' => 'gift',
@@ -50,13 +55,8 @@ class ChequeNormalizerTest extends TestCase
         $cheque2 = [];
         $cheque2[] = [
             'name' => 'product1',
-            'quantity' => 11,
-            'price' => 7,
-        ];
-        $cheque2[] = [
-            'name' => 'product2',
-            'quantity' => 5,
-            'price' => 5,
+            'quantity' => 15,
+            'price' => 2,
         ];
         $cheque2[] = [
             'name' => 'gift',
@@ -65,6 +65,20 @@ class ChequeNormalizerTest extends TestCase
         ];
 
         yield [$cheque2];
+
+        $cheque3 = [];
+        $cheque3[] = [
+            'name' => 'product1',
+            'quantity' => 8,
+            'price' => 3,
+        ];
+        $cheque3[] = [
+            'name' => 'gift',
+            'quantity' => 13,
+            'price' => 0,
+        ];
+
+        yield [$cheque3];
     }
 
     /**
