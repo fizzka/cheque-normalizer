@@ -64,51 +64,53 @@ class ChequeNormalizer
             } else {
                 $aFirstProduct['price'] -= $iDiscountError;
             }
-        } elseif ($iDiscountError > 0) {
-            foreach ($aProducts as &$aProduct) {
-                if ($iDiscountError === 0) {
-                    break;
-                }
+        }
 
-                if ($aProduct['price'] <= 1) {
-                    continue;
-                }
+        foreach ($aProducts as &$aProduct) {
+            if ($iDiscountError === 0) {
+                break;
+            }
 
-                if ($iDiscountError >= ($aProduct['price'] -1 ) * $aProduct['quantity']) {
-                    $iDiscountError -= ($aProduct['price'] - 1) * $aProduct['quantity'];
-                    $aProduct['price'] = 1;
-                    continue;
-                }
+            // $iDiscountError > 0
 
-                $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
-                $iSeparatedProducts = $this->round($iSeparatedProducts);
+            if ($aProduct['price'] <= 1) {
+                continue;
+            }
 
-                if ($this->check($iSeparatedProducts, $aProduct['price'], $iDiscountError)) {
-                    $aProduct['quantity'] -= $iSeparatedProducts;
+            if ($iDiscountError >= ($aProduct['price'] -1 ) * $aProduct['quantity']) {
+                $iDiscountError -= ($aProduct['price'] - 1) * $aProduct['quantity'];
+                $aProduct['price'] = 1;
+                continue;
+            }
+
+            $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
+            $iSeparatedProducts = $this->round($iSeparatedProducts);
+
+            if ($this->check($iSeparatedProducts, $aProduct['price'], $iDiscountError)) {
+                $aProduct['quantity'] -= $iSeparatedProducts;
+                $aProducts[] = [
+                    'name' => $aProduct['name'] ?? '',
+                    'quantity' => $iSeparatedProducts,
+                    'price' => 1,
+                ];
+
+                $iDiscountError -= ($aProduct['price'] - 1) * $iSeparatedProducts;
+            }
+
+            if ($iDiscountError !== 0 && ($aProduct['price'] - $iDiscountError) >= 1) {
+                if ($aProduct['quantity'] > 1) {
+                    $aProduct['quantity'] -= 1;
+
                     $aProducts[] = [
                         'name' => $aProduct['name'] ?? '',
-                        'quantity' => $iSeparatedProducts,
-                        'price' => 1,
+                        'quantity' => 1,
+                        'price' => $aProduct['price'] - $iDiscountError,
                     ];
-
-                    $iDiscountError -= ($aProduct['price'] - 1) * $iSeparatedProducts;
+                } else {
+                    $aProduct['price'] -= $iDiscountError;
                 }
 
-                if ($iDiscountError !== 0 && ($aProduct['price'] - $iDiscountError) >= 1) {
-                    if ($aProduct['quantity'] > 1) {
-                        $aProduct['quantity'] -= 1;
-
-                        $aProducts[] = [
-                            'name' => $aProduct['name'] ?? '',
-                            'quantity' => 1,
-                            'price' => $aProduct['price'] - $iDiscountError,
-                        ];
-                    } else {
-                        $aProduct['price'] -= $iDiscountError;
-                    }
-
-                    $iDiscountError = 0;
-                }
+                $iDiscountError = 0;
             }
         }
 
