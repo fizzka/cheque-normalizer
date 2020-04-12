@@ -74,7 +74,7 @@ class ChequeNormalizer
                     $iDiscountError -= ($aProduct['price'] * $aProduct['quantity']) - $aProduct['quantity'];
                     $aProduct['price'] = 1;
                 } else {
-                    $iSeparatedProducts = ($iDiscountError / $aProduct['price'] > $aProduct['quantity']) ? $aProduct['quantity'] : $iDiscountError / $aProduct['price'];
+                    $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / $aProduct['price']);
 
                     $iSeparatedProducts = $this->round($iSeparatedProducts);
 
