@@ -1,6 +1,10 @@
-## "Размазыватель чеков"
+# "Размазыватель" чеков
 
-### Тестирование
+## Usage
+
+composer require "web-dev/cheque-normalizer": "dev-master"
+
+## Тестирование
 
 ```sh
 composer install
