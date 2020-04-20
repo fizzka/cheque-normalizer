@@ -14,10 +14,7 @@ class ChequeNormalizer
 
     public function normalize(array $aProducts, $iTotalSum)
     {
-        $positionCount = 0;
-        foreach ($aProducts as $product) {
-            $positionCount += $product['quantity'];
-        }
+        $positionCount = $this->totalCount($aProducts);
 
         if ($positionCount > $iTotalSum) {
             throw new \Exception("Can't normalize cheque: items={$positionCount}, sum={$iTotalSum}");
@@ -50,14 +47,42 @@ class ChequeNormalizer
         }
 
         $iDiscountError = $iDiscountValue - (int)$iDiscountUsed;
+        //todo
+        //$iDiscountError = $this->totalSum($aProducts) - $iTotalSum);
 
-        if ($iDiscountError < 0) {
-            return $this->negativeCorrection($aProducts, $iDiscountError);
-        } elseif ($iDiscountError > 0) {
-            return $this->positiveCorrection($aProducts, $iDiscountError);
+        $prevDiff = 2 * $iDiscountError;
+
+        while (abs($iDiscountError) >= 1 && abs($prevDiff) > abs($iDiscountError)) {
+            if ($iDiscountError > 0) {
+                $aProducts = $this->positiveCorrection($aProducts, $iDiscountError);
+            }
+
+            if ($iDiscountError < 0) {
+                $aProducts = $this->negativeCorrection($aProducts, $iDiscountError);
+            }
+
+            $prevDiff = $iDiscountError;
+            $iDiscountError = $this->totalSum($aProducts) - $iTotalSum;
+        }
+
+        if (abs($iDiscountError) >= 1) {
+            // throw new \Exception('Normalization failed');
+            return [];
         }
 
         return $aProducts;
+    }
+
+    public static function totalSum(array $cheque): int
+    {
+        return collect($cheque)->sum(function(array $pos): int {
+            return $pos['price'] * $pos['quantity'];
+        });
+    }
+
+    public static function totalCount(array $cheque): int
+    {
+        return collect($cheque)->sum('quantity');
     }
 
     private function negativeCorrection($aProducts, $iDiscountError)
@@ -89,7 +114,7 @@ class ChequeNormalizer
                 continue;
             }
 
-            if ($iDiscountError >= ($aProduct['price'] -1 ) * $aProduct['quantity']) {
+            if ($iDiscountError >= ($aProduct['price'] - 1) * $aProduct['quantity']) {
                 $iDiscountError -= ($aProduct['price'] - 1) * $aProduct['quantity'];
                 $aProduct['price'] = 1;
                 continue;
