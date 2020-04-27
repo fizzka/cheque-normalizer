@@ -86,12 +86,30 @@ class ChequeNormalizerTest extends TestCase
             'price' => 36,
         ];
         yield [$cheque, 3227];
+
+        /** @see PWEB-5480 */
+        $cheque = [];
+        $cheque[] = [
+            'name' => 'product1',
+            'quantity' => 30,
+            'price' => 34,
+        ];
+        yield [$cheque, 899.77];
+
+        /** @see PWEB-5480 */
+        $cheque = [];
+        $cheque[] = [
+            'name' => 'product1',
+            'quantity' => 30,
+            'price' => 34,
+        ];
+        yield [$cheque, 900.21];
     }
 
     /**
      * @dataProvider cheques
      */
-    public function testSmudgeOrders(array $cheque, int $sum = null)
+    public function testSmudgeOrders(array $cheque, float $sum = null)
     {
         $normalizer = $this->createSut();
         if (!$sum) {

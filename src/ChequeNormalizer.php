@@ -70,12 +70,17 @@ class ChequeNormalizer
             return [];
         }
 
+        $iDiscountError = round($iDiscountError, 2);
+        if ($iDiscountError !== 0) {
+            $aProducts = $this->fixCops($aProducts, $iDiscountError);
+        }
+
         return $aProducts;
     }
 
-    public static function totalSum(array $cheque): int
+    public static function totalSum(array $cheque): float
     {
-        return collect($cheque)->sum(function(array $pos): int {
+        return collect($cheque)->sum(function(array $pos): float {
             return $pos['price'] * $pos['quantity'];
         });
     }
@@ -83,6 +88,18 @@ class ChequeNormalizer
     public static function totalCount(array $cheque): int
     {
         return collect($cheque)->sum('quantity');
+    }
+
+    private function fixCops(array $cheque, float $iDiscountError): array
+    {
+        // tmp fix PWEB-5480
+        $lastPos = array_pop($cheque);
+        if ($lastPos['quantity'] == 1) {
+            $lastPos['price'] -= $iDiscountError;
+        }
+
+        array_push($cheque, $lastPos);
+        return $cheque;
     }
 
     private function negativeCorrection($aProducts, $iDiscountError)
@@ -132,7 +149,6 @@ class ChequeNormalizer
                 } else {
                     $aProduct['price'] -= $iDiscountError;
                 }
-
                 break;
             }
 
