@@ -1,0 +1,8 @@
+parameters:
+	level: 4
+	paths:
+		- src
+		- tests
+	autoload_directories:
+		- tests
+	inferPrivatePropertyTypeFromConstructor: true

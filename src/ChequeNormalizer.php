@@ -80,7 +80,7 @@ class ChequeNormalizer
 
     public static function totalSum(array $cheque): float
     {
-        return collect($cheque)->sum(function(array $pos): float {
+        return collect($cheque)->sum(function (array $pos): float {
             return $pos['price'] * $pos['quantity'];
         });
     }
@@ -195,7 +195,7 @@ class ChequeNormalizer
 
     public function setChecker(callable $fn): self
     {
-        $this->condition = $fn;
+        $this->checker = $fn;
         return $this;
     }
 }

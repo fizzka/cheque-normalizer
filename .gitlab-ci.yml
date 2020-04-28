@@ -1,0 +1,46 @@
+image: jakzal/phpqa:1.35.0-php7.3-alpine
+
+cache:
+  paths:
+    - vendor/
+
+stages:
+  - lint
+  - build
+  - test
+
+lint:
+  stage: lint
+  script:
+    - parallel-lint src tests
+
+code-style:
+  stage: lint
+  script:
+    - phpcs --standard=psr12 src tests
+
+validate-composer:
+  stage: lint
+  script:
+    - composer validate
+
+composer:
+  stage: build
+  before_script:
+    - composer g require hirak/prestissimo
+  script:
+    - composer i --ignore-platform-reqs --prefer-dist
+
+phpstan:
+  stage: test
+  script:
+    - phpstan analyze
+
+unit-tests:
+  stage: test
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  before_script:
+    - docker-php-ext-install bcmath
+    - php -v
+  script:
+    - php -dpcov.enabled=1 vendor/bin/phpunit --colors=never --coverage-text --whitelist=src
