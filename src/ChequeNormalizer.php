@@ -29,7 +29,11 @@ class ChequeNormalizer
 
         $iDiscountValue = $iPositionsSum - $iTotalSum;
 
-        $fCoefficient = (double)bcdiv($iDiscountValue, $iPositionsSum, 2);
+        /**
+         * @todo тут нужно будет разобраться, зачем был bcdiv и почему такое округление вообще нужно.
+         * скорее всего, мы неправильно работаем со скидкой
+         */
+        $fCoefficient = floor(100 * $iDiscountValue / $iPositionsSum) / 100;
         $iDiscountUsed = 0;
 
         foreach ($aProducts as &$aProduct) {

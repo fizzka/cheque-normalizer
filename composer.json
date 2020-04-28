@@ -9,7 +9,6 @@
         }
     ],
     "require": {
-        "ext-bcmath": "*",
         "tightenco/collect": "^7.6"
     },
     "autoload": {

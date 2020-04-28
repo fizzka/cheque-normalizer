@@ -29,7 +29,7 @@ composer:
   before_script:
     - composer g require hirak/prestissimo
   script:
-    - composer i --ignore-platform-reqs --prefer-dist
+    - composer i --prefer-dist
 
 phpstan:
   stage: test
@@ -40,7 +40,6 @@ unit-tests:
   stage: test
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
   before_script:
-    - docker-php-ext-install bcmath
     - php -v
   script:
     - php -dpcov.enabled=1 vendor/bin/phpunit --colors=never --coverage-text --whitelist=src
