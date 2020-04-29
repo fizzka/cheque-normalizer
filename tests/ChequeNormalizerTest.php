@@ -32,87 +32,85 @@ class ChequeNormalizerTest extends TestCase
         ];
     }
 
+    private function createProduct(int $price, $quantity = 1, string $name = null): array
+    {
+        // thieft from illuminate/support Str::random
+        $random = function ($length = 16): string {
+            $string = '';
+
+            while (($len = strlen($string)) < $length) {
+                $size = $length - $len;
+
+                $bytes = random_bytes($size);
+
+                $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
+            }
+
+            return $string;
+        };
+
+        return [
+            'name' => $name ?? $random(4),
+            'quantity' => $quantity,
+            'price' => $price,
+        ];
+    }
+
     public function cheques()
     {
-        $cheque1 = [];
-        $cheque1[] = [
-            'name' => 'product1',
-            'quantity' => 11,
-            'price' => 7,
+        $cheque = [
+            $this->createProduct(7, 11),
+            $this->createProduct(5, 5),
+            $this->createProduct(0, 13),
         ];
-        $cheque1[] = [
-            'name' => 'product2',
-            'quantity' => 5,
-            'price' => 5,
-        ];
-        $cheque1[] = [
-            'name' => 'gift',
-            'quantity' => 13,
-            'price' => 0,
-        ];
-        yield [$cheque1];
+        yield [$cheque];
 
-        $cheque2 = [];
-        $cheque2[] = [
-            'name' => 'product1',
-            'quantity' => 15,
-            'price' => 2,
+        $cheque = [
+            $this->createProduct(2, 15),
+            $this->createProduct(0, 13),
         ];
-        $cheque2[] = [
-            'name' => 'gift',
-            'quantity' => 13,
-            'price' => 0,
-        ];
-        yield [$cheque2];
+        yield [$cheque];
 
-        $cheque3 = [];
-        $cheque3[] = [
-            'name' => 'product1',
-            'quantity' => 8,
-            'price' => 3,
+        $cheque = [
+            $this->createProduct(3, 8),
+            $this->createProduct(0, 13),
         ];
-        $cheque3[] = [
-            'name' => 'gift',
-            'quantity' => 13,
-            'price' => 0,
-        ];
-        yield [$cheque3];
+        yield [$cheque];
 
         /** @see PWEB-5453 */
-        $cheque = [];
-        $cheque[] = [
-            'name' => 'product1',
-            'quantity' => 100,
-            'price' => 36,
+        $cheque = [
+            $this->createProduct(36, 100),
         ];
         yield [$cheque, 3227];
 
         /** @see PWEB-5480 */
-        $cheque = [];
-        $cheque[] = [
-            'name' => 'product1',
-            'quantity' => 30,
-            'price' => 34,
+        $cheque = [
+            $this->createProduct(34, 30),
         ];
         yield [$cheque, 899.77];
-
-        /** @see PWEB-5480 */
-        $cheque = [];
-        $cheque[] = [
-            'name' => 'product1',
-            'quantity' => 30,
-            'price' => 34,
-        ];
         yield [$cheque, 900.21];
 
         /** @see PWEB-5625 */
-        $cheque = [];
-        $cheque[] = [
-            'name' => 'product1',
-            'quantity' => 5,
-            'price' => 228,
+        $cheque = [
+            $this->createProduct(228, 5),
         ];
         yield [$cheque, 1014.12];
+
+        /** @see PWEB-5626 */
+        $cheque = [
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(30, 2),
+            $this->createProduct(2134, 1),
+            $this->createProduct(30, 2),
+            $this->createProduct(1919, 1),
+        ];
+        yield [$cheque, 2729.78];
     }
 
     /**

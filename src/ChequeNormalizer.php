@@ -155,7 +155,7 @@ class ChequeNormalizer
                     $aProducts[] = [
                         'name' => $aProduct['name'] ?? '',
                         'quantity' => 1,
-                        'price' => $aProduct['price'] - $iDiscountError,
+                        'price' => round($aProduct['price'] - $iDiscountError, 2),
                     ];
                 } else {
                     $aProduct['price'] -= $iDiscountError;
