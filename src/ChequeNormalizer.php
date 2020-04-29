@@ -92,13 +92,20 @@ class ChequeNormalizer
 
     private function fixCops(array $cheque, float $iDiscountError): array
     {
-        // tmp fix PWEB-5480
+        //assert($iDiscountError) !== 0, abs($iDiscountError) < 1 //копейки
+
         $lastPos = array_pop($cheque);
         if ($lastPos['quantity'] == 1) {
             $lastPos['price'] -= $iDiscountError;
+        } else {
+            //split
+            $lastPos['quantity']--;
+            array_push($cheque, $lastPos);
+            $lastPos['quantity'] = 1;
+            $lastPos['price'] -= $iDiscountError;
         }
-
         array_push($cheque, $lastPos);
+
         return $cheque;
     }
 

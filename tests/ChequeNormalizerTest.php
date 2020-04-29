@@ -104,6 +104,15 @@ class ChequeNormalizerTest extends TestCase
             'price' => 34,
         ];
         yield [$cheque, 900.21];
+
+        /** @see PWEB-5625 */
+        $cheque = [];
+        $cheque[] = [
+            'name' => 'product1',
+            'quantity' => 5,
+            'price' => 228,
+        ];
+        yield [$cheque, 1014.12];
     }
 
     /**
