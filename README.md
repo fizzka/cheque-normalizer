@@ -5,11 +5,11 @@
 
 ## Usage
 
-composer require "web-dev/cheque-normalizer": "dev-master"
+composer require web-dev/cheque-normalizer
 
 ## Тестирование
 
 ```sh
 composer install
-phpunit
+./vendor/bin/phpunit
 ```
