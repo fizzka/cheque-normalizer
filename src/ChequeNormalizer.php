@@ -4,14 +4,6 @@ namespace Petcorp\Fiscal;
 
 class ChequeNormalizer
 {
-    private $rounder = 'floor';
-    private $checker;
-
-    public function __construct()
-    {
-        $this->checker = $this->defaultChecker();
-    }
-
     public function normalize(array $aProducts, $iTotalSum)
     {
         $positionCount = $this->totalCount($aProducts);
@@ -164,9 +156,9 @@ class ChequeNormalizer
             }
 
             $iSeparatedProducts = min($aProduct['quantity'], $iDiscountError / ($aProduct['price'] - 1));
-            $iSeparatedProducts = $this->round($iSeparatedProducts);
+            $iSeparatedProducts = floor($iSeparatedProducts);
 
-            if ($this->check($iSeparatedProducts, $aProduct['price'], $iDiscountError)) {
+            if ($iSeparatedProducts > 0) {
                 $aProduct['quantity'] -= $iSeparatedProducts;
                 $aProducts[] = [
                     'name' => $aProduct['name'] ?? '',
@@ -179,34 +171,5 @@ class ChequeNormalizer
         }
 
         return $aProducts;
-    }
-
-    private static function defaultChecker()
-    {
-        return function ($number) {
-            return $number > 0;
-        };
-    }
-
-    public function check(int $number, float $price, int $error): bool
-    {
-        return ($this->checker)($number, $price, $error);
-    }
-
-    public function round($number): int
-    {
-        return ($this->rounder)($number);
-    }
-
-    public function setRounder(callable $fn): self
-    {
-        $this->rounder = $fn;
-        return $this;
-    }
-
-    public function setChecker(callable $fn): self
-    {
-        $this->checker = $fn;
-        return $this;
     }
 }
