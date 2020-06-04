@@ -4,7 +4,7 @@ namespace Petcorp\Fiscal;
 
 class ChequeNormalizer
 {
-    public function normalize(array $aProducts, $iTotalSum)
+    public function normalize(array $aProducts, float $iTotalSum): array
     {
         $positionCount = $this->totalCount($aProducts);
 
@@ -67,7 +67,7 @@ class ChequeNormalizer
         }
 
         $iDiscountError = round($iDiscountError, 2);
-        if ($iDiscountError !== 0) {
+        if ($iDiscountError != 0) {
             $aProducts = $this->fixCops($aProducts, $iDiscountError);
         }
 
@@ -105,7 +105,7 @@ class ChequeNormalizer
         return $cheque;
     }
 
-    private function negativeCorrection($aProducts, $iDiscountError)
+    private function negativeCorrection(array $aProducts, float $iDiscountError): array
     {
         $aFirstProduct = &$aProducts[0];
 
@@ -123,10 +123,10 @@ class ChequeNormalizer
         return $aProducts;
     }
 
-    private function positiveCorrection($aProducts, $iDiscountError)
+    private function positiveCorrection(array $aProducts, float $iDiscountError): array
     {
         foreach ($aProducts as &$aProduct) {
-            if ($iDiscountError === 0) {
+            if ($iDiscountError == 0) {
                 break;
             }
 

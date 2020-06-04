@@ -1,4 +1,4 @@
-image: jakzal/phpqa:1.35.0-php7.3-alpine
+image: jakzal/phpqa:1.38-alpine
 
 cache:
   paths:
@@ -12,12 +12,12 @@ stages:
 lint:
   stage: lint
   script:
-    - parallel-lint src tests
+    - phplint --no-cache
 
 code-style:
   stage: lint
   script:
-    - phpcs --standard=psr12 src tests
+    - ecs check
 
 validate-composer:
   stage: lint
@@ -35,6 +35,11 @@ phpstan:
   stage: test
   script:
     - phpstan analyze
+
+psalm:
+  stage: test
+  script:
+    - psalm
 
 unit-tests:
   stage: test

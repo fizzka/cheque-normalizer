@@ -171,12 +171,11 @@ class ChequeNormalizerTest extends TestCase
         $iMinQuantity,
         $iMaxQuantity
     ) {
-
         for ($i = 0; $i < $iCountOrder; $i++) {
             $iSum = 0;
 
             // Добавление позиций с нулевой ценой
-            $aProductsArray = array();
+            $aProductsArray = [];
             for ($j = 0; $j < $iCountZeroProduct; $j++) {
                 $aRandProduct = ["quantity" => rand($iMinQuantity, $iMaxQuantity), "price" => 0];
                 $aProductsArray[] = $aRandProduct;
